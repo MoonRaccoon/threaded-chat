@@ -1,20 +1,27 @@
-import { useState } from 'react';
-import { Outlet } from 'react-router-dom';
+import { Outlet, Link, useLoaderData } from 'react-router-dom';
+import { getConversations } from '@/api/conversations';
+import { Conversation } from '@/types/conversation';
+
+export async function loader() {
+  const conversations = await getConversations();
+  return conversations;
+}
 
 const Root = () => {
-  const [count, setCount] = useState(0);
+  const conversations = useLoaderData() as Conversation[];
 
   return (
     <div className="flex h-screen">
       <nav className="flex w-1/4 flex-none flex-col">
         <h1>Messages</h1>
         <ul>
-          <li>
-            <a href={`/conversations/1`}>Your Name</a>
-          </li>
-          <li>
-            <a href={`/conversations/2`}>Your Friend</a>
-          </li>
+          {conversations.map((conversation: Conversation) => (
+            <li key={conversation.id}>
+              <Link to={`/conversations/${conversation.id}`}>
+                {conversation.name}
+              </Link>
+            </li>
+          ))}
         </ul>
       </nav>
       <main className="flex flex-1">
