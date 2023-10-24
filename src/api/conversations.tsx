@@ -70,7 +70,7 @@ export async function createMessage({
   urn: string;
   text: string;
 }) {
-  const id = Math.random().toString(36).substring(2, 9);
+  const id = (Math.random() * Infinity).toString();
   const newMessage: Message = {
     id,
     senderName: 'You',
