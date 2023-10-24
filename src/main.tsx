@@ -3,7 +3,10 @@ import ReactDOM from 'react-dom/client';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import Detail from '@/routes/conversations/detail';
 import Root, { loader as rootLoader } from '@/routes/root';
-import { loader as conversationLoader } from '@/routes/conversations/detail';
+import {
+  loader as conversationLoader,
+  action as messageAction,
+} from '@/routes/conversations/detail';
 import '@/index.css';
 import { seedApiData } from '@/api/conversations';
 
@@ -22,6 +25,7 @@ const router = createBrowserRouter([
         loader: ({ params }) => {
           return conversationLoader(params.conversationId);
         },
+        action: messageAction,
         element: <Detail />,
       },
     ],

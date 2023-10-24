@@ -1,5 +1,6 @@
 import localforage from 'localforage';
 import deepFreeze from 'deep-freeze-es6';
+import { Message } from '@/types/message';
 
 const conversationsSeed = deepFreeze([
   {
@@ -56,4 +57,24 @@ export async function getConversations() {
 
 export async function getMessages(conversationId: string) {
   return localforage.getItem(`urn:conversation:${conversationId}`);
+}
+
+export async function createMessage({
+  conversationId,
+  text,
+}: {
+  conversationId: string;
+  text: string;
+}) {
+  const id = Math.random().toString(36).substring(2, 9);
+  const newMessage: Message = { id, senderName: 'You', date: new Date(), text };
+  const currentMessages: Message[] = (await getMessages(
+    conversationId,
+  )) as Message[];
+  currentMessages.push(newMessage);
+  await localforage.setItem(
+    `urn:conversation:${conversationId}`,
+    currentMessages,
+  );
+  return newMessage;
 }

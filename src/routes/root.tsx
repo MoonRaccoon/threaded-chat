@@ -1,7 +1,7 @@
 import { Outlet, useLoaderData } from 'react-router-dom';
 import { getConversations } from '@/api/conversations';
 import { Conversation } from '@/types/conversation';
-import ConversationList from '@/components/conversation-list';
+import ConversationListComponent from '@/components/conversation-list';
 
 export async function loader() {
   const conversations = await getConversations();
@@ -13,11 +13,11 @@ const Root = () => {
 
   return (
     <div className="flex h-screen">
-      <nav className="flex w-1/4 flex-none flex-col border-2 border-solid border-gray-200	">
-        <h1 className="box-content flex h-16 items-center border-b-4 border-gray-200 pl-3 text-3xl">
+      <nav className="flex w-1/4 min-w-min flex-none flex-col border-2 border-solid border-gray-200	">
+        <h1 className="box-content flex h-16 shrink-0 items-center border-b-4 border-gray-200 px-3 text-3xl">
           Messages
         </h1>
-        <ConversationList conversations={conversations} />
+        <ConversationListComponent conversations={conversations} />
       </nav>
       <Outlet />
     </div>
