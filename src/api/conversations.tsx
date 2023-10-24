@@ -81,6 +81,5 @@ export async function createMessage({
   currentMessages.push(newMessage);
 
   await localforage.setItem(urn, currentMessages);
-  console.log(urn, currentMessages);
   return newMessage;
 }
