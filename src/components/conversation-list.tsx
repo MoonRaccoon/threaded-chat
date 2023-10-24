@@ -9,9 +9,9 @@ const ConversationListComponent = ({
   conversations,
 }: ConversationListProps) => {
   return (
-    <ul role="list">
+    <ul className="max-h-full overflow-y-auto" role="list">
       {conversations.map((conversation) => (
-        <li className="border-b border-gray-200" key={conversation.id}>
+        <li className="border-b" key={conversation.id}>
           <NavLink
             to={`conversations/${conversation.id}`}
             className={({ isActive, isPending }) =>

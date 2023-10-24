@@ -1,4 +1,4 @@
-import { getMessages, createMessage } from '@/api/conversations';
+import { getMessages } from '@/api/conversations';
 import { Conversation } from '@/types/conversation';
 import { Message } from '@/types/message';
 import MessageComponent from '@/components/conversations/message';
@@ -7,58 +7,36 @@ import {
   useParams,
   useRouteLoaderData,
   Form,
-  Params,
+  Outlet,
 } from 'react-router-dom';
 import ParticipantsComponent from '@/components/conversations/participants';
 
 export async function loader(conversationId: string | undefined) {
   if (conversationId) {
-    const messages = await getMessages(conversationId);
+    const messages = await getMessages(`urn:conversation:${conversationId}`);
     return messages;
   }
 }
 
-const MESSAGE_FORM_TEXTAREA_NAME = 'messageText';
+export const MESSAGE_FORM_INPUT_NAME = 'messageText';
 
-export async function action({
-  request,
-  params,
-}: {
-  request: Request;
-  params: Params;
-}) {
-  const FormData = await request.formData();
-  const { conversationId } = params;
-  const text = FormData.get(MESSAGE_FORM_TEXTAREA_NAME)?.toString();
-
-  if (conversationId && text) {
-    const message = await createMessage({
-      conversationId,
-      text,
-    });
-
-    return { message };
-  }
-}
-
-const Detail = () => {
+const ConversationDetail = () => {
   const conversations = useRouteLoaderData('root') as Conversation[];
   const messages = useLoaderData() as Message[];
-  const { conversationId } = useParams();
-  const { participants } = conversations.find(
-    (conversation) => conversationId === conversation.id,
-  ) ?? { participants: undefined };
 
-  const hasThread = false;
+  const { conversationId } = useParams();
+  const participants = conversations.find(
+    (conversation) => conversationId === conversation.id,
+  )?.participants;
 
   return (
     <main className="flex flex-1">
-      <article className="flex w-full flex-col border-2">
+      <article className="flex flex-1 flex-col border-2">
         <header className="box-content flex h-16 w-full shrink-0 items-center border-b-4">
-          <h2 className="ml-3 mr-2 text-lg">To: </h2>
+          <h2 className="ml-3 mr-2 text-lg">To:</h2>
           <ParticipantsComponent participants={participants} />
         </header>
-        <ul className="flex flex-1 flex-col ">
+        <ul className="flex max-h-full flex-1 flex-col overflow-y-auto">
           {messages.map((message: Message) => (
             <MessageComponent message={message} key={message.id} />
           ))}
@@ -68,7 +46,7 @@ const Detail = () => {
             <textarea
               className="ml-5 h-3/4 flex-1 rounded-xl border p-2 shadow"
               placeholder="Enter your message here"
-              name={MESSAGE_FORM_TEXTAREA_NAME}
+              name={MESSAGE_FORM_INPUT_NAME}
               required
               spellCheck
             ></textarea>
@@ -83,9 +61,9 @@ const Detail = () => {
           </Form>
         </section>
       </article>
-      {hasThread && <section>Test 2!</section>}
+      <Outlet />
     </main>
   );
 };
 
-export default Detail;
+export default ConversationDetail;
