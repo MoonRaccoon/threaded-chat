@@ -1,6 +1,7 @@
-import { Outlet, Link, useLoaderData } from 'react-router-dom';
+import { Outlet, useLoaderData } from 'react-router-dom';
 import { getConversations } from '@/api/conversations';
 import { Conversation } from '@/types/conversation';
+import ConversationList from '@/components/conversation-list';
 
 export async function loader() {
   const conversations = await getConversations();
@@ -12,21 +13,13 @@ const Root = () => {
 
   return (
     <div className="flex h-screen">
-      <nav className="flex w-1/4 flex-none flex-col">
-        <h1>Messages</h1>
-        <ul>
-          {conversations.map((conversation: Conversation) => (
-            <li key={conversation.id}>
-              <Link to={`/conversations/${conversation.id}`}>
-                {conversation.name}
-              </Link>
-            </li>
-          ))}
-        </ul>
+      <nav className="flex w-1/4 flex-none flex-col border-2 border-solid border-gray-200	">
+        <h1 className="box-content flex h-16 items-center border-b-4 border-gray-200 pl-3 text-3xl">
+          Messages
+        </h1>
+        <ConversationList conversations={conversations} />
       </nav>
-      <main className="flex flex-1">
-        <Outlet />
-      </main>
+      <Outlet />
     </div>
   );
 };

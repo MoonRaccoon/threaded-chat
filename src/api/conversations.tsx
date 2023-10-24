@@ -1,60 +1,59 @@
-const deepFreezeArray = (objectArray: Array<object> | undefined) => {
-  if (objectArray) {
-    objectArray.forEach((obj) => Object.freeze(obj));
+import localforage from 'localforage';
+import deepFreeze from 'deep-freeze-es6';
 
-    return Object.freeze(objectArray);
-  }
-};
+const conversationsSeed = deepFreeze([
+  {
+    id: '0',
+    name: 'Shamoun',
+  },
+  {
+    id: '1',
+    name: 'Your Friend Steve',
+    participants: ['Steve', 'Garfunkel', 'Oates'],
+  },
+]);
 
-const conversations = () => {
-  const data = [
-    {
-      id: '0',
-      name: 'Myself',
-    },
-    {
-      id: '1',
-      name: 'Your Friend Steve',
-    },
-  ];
+const selfMessagesSeed = deepFreeze([
+  {
+    id: '0',
+    senderName: 'You',
+    date: new Date(),
+    text: 'Saving this for later:',
+  },
+  {
+    id: '1',
+    senderName: 'You',
+    date: new Date(),
+    text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+  },
+]);
 
-  return deepFreezeArray(data);
-};
+const friendMessagesSeed = deepFreeze([
+  {
+    id: '0',
+    senderName: 'You',
+    date: new Date(),
+    text: 'Hey Steve, check it out: Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+  },
+  {
+    id: '1',
+    senderName: 'Steve',
+    date: new Date(),
+    text: 'Woah dude that is deep... omg...',
+  },
+]);
 
-const messages = (conversationId: string) => {
-  let data: Array<object> | undefined;
-
-  if (conversationId === '0') {
-    data = [
-      {
-        id: '0',
-        sender: 'my-user-id',
-        text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-      },
-      {
-        id: '1',
-        sender: 'steve-user-id',
-        text: 'Woah dude that is deep... very cool...',
-      },
-    ];
-  } else if (conversationId === '1') {
-    data = [
-      {
-        id: '0',
-        sender: 'steve-user-id',
-        text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-      },
-      {
-        id: '1',
-        sender: 'my-user-id',
-        text: 'Woah dude you are a quick learner!',
-      },
-    ];
-  }
-
-  return deepFreezeArray(data);
+export const seedApiData = () => {
+  localforage.setItem('conversations', conversationsSeed);
+  localforage.setItem('urn:conversation:0', selfMessagesSeed);
+  localforage.setItem('urn:conversation:1', friendMessagesSeed);
+  console.log('Initialised data');
 };
 
 export async function getConversations() {
-  return conversations();
+  return localforage.getItem('conversations');
+}
+
+export async function getMessages(conversationId: string) {
+  return localforage.getItem(`urn:conversation:${conversationId}`);
 }
