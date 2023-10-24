@@ -41,6 +41,7 @@ export async function action({
   }
 }
 
+
 const Detail = () => {
   const conversations = useRouteLoaderData('root') as Conversation[];
   const messages = useLoaderData() as Message[];

@@ -3,4 +3,4 @@ export type Message = {
   senderName: string;
   date: Date;
   text: string;
-}
+};

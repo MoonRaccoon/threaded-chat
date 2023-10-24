@@ -20,7 +20,7 @@ const ParticipantsComponent = ({ participants }: ParticipantsProps) => {
         <span className="font-bold">Me</span>
       )}
     </>
-  )
+  );
 };
 
 export default ParticipantsComponent;
